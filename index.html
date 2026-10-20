@@ -4,510 +4,442 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Orbit Focus</title>
+
 <style>
-  :root {
-    --bg:#f5f3fc;
-    --card:#fff;
-    --ink:#302944;
-    --muted:#8a819c;
-    --accent:#8270df;
-    --soft:#eeebfa;
-    --line:#e7e2f2;
-  }
-
-  body.dark {
-    --bg:#171421;
-    --card:#231e30;
-    --ink:#f3eefc;
-    --muted:#aca2bf;
-    --accent:#b0a0ff;
-    --soft:#332b46;
-    --line:#3c334e;
-  }
-
-  * { box-sizing:border-box; }
-
-  body {
-    margin:0;
-    font:15px/1.6 system-ui,sans-serif;
-    background:var(--bg);
-    color:var(--ink);
-    transition:background .2s,color .2s;
-  }
-
-  button,input { font:inherit; }
-
-  button {
-    cursor:pointer;
-    border:0;
-    border-radius:12px;
-    padding:11px 18px;
-    background:var(--soft);
-    color:var(--ink);
-  }
-
-  button:hover { filter:brightness(.96); }
-  button:disabled { opacity:.5;cursor:not-allowed; }
-
-  :focus-visible {
-    outline:3px solid var(--accent);
-    outline-offset:4px;
-  }
-
-  nav,main,footer {
-    max-width:1080px;
-    margin:auto;
-    padding:24px;
-  }
-
-  nav {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-
-  .logo {
-    font-size:24px;
-    font-weight:800;
-    letter-spacing:-1px;
-  }
-
-  .logo span { color:var(--accent); }
-
-  .hero { padding:35px 0 25px; }
-
-  .eyebrow {
-    color:var(--accent);
-    font-size:11px;
-    letter-spacing:2px;
-    font-weight:700;
-  }
-
-  h1 {
-    font-size:clamp(36px,6vw,58px);
-    letter-spacing:-2px;
-    line-height:1.15;
-    margin:15px 0;
-  }
-
-  p { color:var(--muted); }
-
-  .layout {
-    display:grid;
-    grid-template-columns:1.15fr 1fr;
-    gap:24px;
-    align-items:start;
-  }
-
-  .card {
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:24px;
-    padding:28px;
-    margin-bottom:24px;
-  }
-
-  .timer-card { text-align:center; }
-
-  .modes {
-    display:flex;
-    justify-content:center;
-    gap:8px;
-    flex-wrap:wrap;
-  }
-
-  .modes button { font-size:12px; }
-
-  .modes button.active {
-    background:var(--accent);
-    color:var(--bg);
-  }
-
-  .clock {
-    position:relative;
-    width:min(100%,290px);
-    aspect-ratio:1;
-    margin:30px auto;
-  }
-
-  svg {
-    width:100%;
-    height:100%;
-    transform:rotate(-90deg);
-  }
-
-  circle {
-    fill:none;
-    stroke-width:5;
-  }
-
-  .ring-bg { stroke:var(--soft); }
-
-  .ring {
-    stroke:var(--accent);
-    stroke-linecap:round;
-    stroke-dasharray:565.49;
-    stroke-dashoffset:0;
-    transition:stroke-dashoffset .3s;
-  }
-
-  .clock-text {
-    position:absolute;
-    inset:0;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-  }
-
-  #time {
-    font-size:58px;
-    font-weight:700;
-    letter-spacing:-3px;
-    font-variant-numeric:tabular-nums;
-  }
-
-  #timerLabel {
-    color:var(--muted);
-    font-size:12px;
-  }
-
-  .primary {
-    background:var(--accent);
-    color:var(--bg);
-    font-weight:700;
-    min-width:140px;
-  }
-
-  .timer-actions {
-    display:flex;
-    justify-content:center;
-    gap:10px;
-  }
-
-  .settings {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-    margin-top:25px;
-    text-align:left;
-  }
-
-  label { color:var(--muted);font-size:12px; }
-
-  input[type=number],input[type=text] {
-    width:100%;
-    border:1px solid var(--line);
-    border-radius:10px;
-    padding:11px;
-    background:var(--bg);
-    color:var(--ink);
-    margin-top:7px;
-  }
-
-  .sound-option {
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    margin-top:18px;
-  }
-
-  input[type=checkbox] { accent-color:var(--accent); }
-
-  h2 { font-size:18px;margin:0 0 5px; }
-
-  .subtitle { font-size:12px;margin:0 0 20px; }
-
-  .task-form {
-    display:flex;
-    gap:8px;
-    align-items:center;
-  }
-
-  .task-form input { margin:0;min-width:0; }
-
-  .task-form button {
-    background:var(--accent);
-    color:var(--bg);
-    font-size:20px;
-    padding:7px 16px;
-  }
-
-  ul { list-style:none;padding:0;margin:20px 0; }
-
-  .task {
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:13px 0;
-    border-bottom:1px solid var(--line);
-  }
-
-  .task label {
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex:1;
-    min-width:0;
-    color:var(--ink);
-    font-size:13px;
-    cursor:pointer;
-  }
-
-  .task span { overflow-wrap:anywhere; }
-
-  .task.done span {
-    text-decoration:line-through;
-    color:var(--muted);
-  }
-
-  .delete {
-    padding:3px 10px;
-    background:transparent;
-    color:var(--muted);
-    font-size:20px;
-  }
-
-  .empty {
-    text-align:center;
-    padding:25px 0;
-    color:var(--muted);
-    font-size:13px;
-  }
-
-  .task-footer {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    font-size:12px;
-    color:var(--muted);
-  }
-
-  .task-footer button { font-size:11px;padding:7px 10px; }
-
-  .stats {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-  }
-
-  .stat {
-    background:var(--soft);
-    padding:18px;
-    border-radius:14px;
-  }
-
-  .stat strong {
-    display:block;
-    font-size:29px;
-    color:var(--accent);
-  }
-
-  .stat span { font-size:11px;color:var(--muted); }
-
-  .quote {
-    font-size:16px;
-    line-height:1.8;
-    margin:0;
-    color:var(--ink);
-  }
-
-  #status {
-    min-height:24px;
-    font-size:12px;
-    color:var(--accent);
-    margin-bottom:0;
-  }
-
-  footer {
-    text-align:center;
-    font-size:11px;
-    color:var(--muted);
-  }
-
-  @media(max-width:750px) {
-    .layout { grid-template-columns:1fr; }
-    nav,main,footer { padding:18px; }
-    .hero { padding-top:15px; }
-    .card { padding:23px; }
-  }
-
-  @media(prefers-reduced-motion:reduce) {
-    * { transition:none !important; }
-  }
+:root {
+  --bg:#f5f3fc; --card:#fff; --ink:#302944;
+  --muted:#81778f; --accent:#806bd8;
+  --soft:#efebfa; --line:#e5dff0;
+}
+body.dark {
+  --bg:#171421; --card:#241e30; --ink:#f3eefc;
+  --muted:#b1a5c4; --accent:#b4a2ff;
+  --soft:#342b47; --line:#433650;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--ink);
+  font:14px/1.6 system-ui,sans-serif;
+}
+button,input,select { font:inherit; }
+button {
+  border:0; border-radius:10px; padding:10px 15px;
+  background:var(--soft); color:var(--ink); cursor:pointer;
+}
+button:hover { filter:brightness(.95); }
+button:disabled { opacity:.5; cursor:not-allowed; }
+:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+nav,main,footer { max-width:1120px; margin:auto; padding:24px; }
+nav,.row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.logo { font-size:25px; font-weight:800; letter-spacing:-1px; }
+.logo span,.eyebrow { color:var(--accent); }
+.hero { padding:25px 0; }
+.eyebrow { font-size:10px; letter-spacing:2px; font-weight:700; }
+h1 {
+  font-size:clamp(35px,6vw,57px); line-height:1.1;
+  letter-spacing:-2px; margin:15px 0;
+}
+h2 { font-size:18px; margin:0 0 8px; }
+p,.muted { color:var(--muted); }
+.small { font-size:11px; }
+.layout { display:grid; grid-template-columns:1fr 1.1fr; gap:22px; align-items:start; }
+.card {
+  background:var(--card); border:1px solid var(--line);
+  border-radius:22px; padding:25px; margin-bottom:22px;
+}
+.primary { background:var(--accent); color:var(--bg); font-weight:700; }
+.timer { text-align:center; }
+.modes,.actions { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
+.modes .active { background:var(--accent); color:var(--bg); }
+.clock { width:260px; max-width:100%; aspect-ratio:1; margin:25px auto; position:relative; }
+.clock svg { width:100%; height:100%; transform:rotate(-90deg); }
+circle { fill:none; stroke-width:5; }
+.track { stroke:var(--soft); }
+#ring { stroke:var(--accent); stroke-linecap:round; }
+.clock-label {
+  position:absolute; inset:0; display:flex;
+  flex-direction:column; align-items:center; justify-content:center;
+}
+#time { font-size:57px; font-weight:750; letter-spacing:-3px; font-variant-numeric:tabular-nums; }
+#timerLabel { color:var(--muted); font-size:12px; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.settings { margin:23px 0 16px; text-align:left; }
+label { font-size:12px; color:var(--muted); }
+input:not([type=checkbox]),select {
+  width:100%; min-width:0; padding:10px;
+  border:1px solid var(--line); border-radius:9px;
+  background:var(--bg); color:var(--ink);
+}
+label input:not([type=checkbox]) { margin-top:6px; }
+input[type=checkbox] { accent-color:var(--accent); }
+.sound { display:flex; justify-content:center; align-items:center; gap:7px; }
+#status { min-height:25px; font-size:12px; color:var(--accent); }
+.task-form { display:grid; grid-template-columns:1fr 100px auto; gap:8px; }
+.filters { display:grid; grid-template-columns:1fr 130px; gap:8px; margin:15px 0; }
+ul { padding:0; list-style:none; margin:15px 0; }
+.task {
+  display:flex; align-items:center; gap:8px;
+  padding:13px 0; border-bottom:1px solid var(--line);
+}
+.task label {
+  flex:1; min-width:0; display:flex; align-items:center;
+  gap:9px; color:var(--ink); cursor:pointer;
+}
+.task-name { overflow-wrap:anywhere; }
+.done .task-name { text-decoration:line-through; color:var(--muted); }
+.priority { font-size:9px; padding:3px 7px; border-radius:6px; white-space:nowrap; }
+.high { color:var(--accent); background:var(--soft); font-weight:800; }
+.normal { color:var(--muted); background:var(--bg); }
+.delete { padding:3px 9px; background:transparent; font-size:20px; color:var(--muted); }
+.empty { padding:20px 0; text-align:center; color:var(--muted); font-size:12px; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:15px 0; }
+.stat { background:var(--soft); padding:14px; border-radius:12px; }
+.stat strong { display:block; font-size:25px; color:var(--accent); }
+.stat span { color:var(--muted); font-size:10px; }
+progress { width:100%; height:13px; accent-color:var(--accent); }
+.history-item {
+  display:flex; justify-content:space-between; gap:15px;
+  border-bottom:1px solid var(--line); padding:10px 0; font-size:12px;
+}
+.history-item time { color:var(--muted); font-size:10px; }
+details { margin-top:16px; color:var(--muted); font-size:12px; }
+summary { cursor:pointer; color:var(--ink); }
+kbd { background:var(--soft); padding:2px 6px; border-radius:4px; }
+footer { text-align:center; color:var(--muted); font-size:11px; }
+[hidden] { display:none!important; }
+@media(max-width:800px) { .layout { grid-template-columns:1fr; } }
+@media(max-width:450px) {
+  nav,main,footer { padding:16px; }
+  .card { padding:19px; }
+  .task-form { grid-template-columns:1fr 90px; }
+  .task-form button { grid-column:1/-1; }
+  .stats { gap:6px; }
+  .stat { padding:10px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  * { animation:none!important; transition:none!important; }
+}
 </style>
 </head>
 
 <body>
 <nav>
   <div class="logo">◌ orbit<span>focus</span></div>
-  <button id="theme" aria-label="Switch to dark mode">☾ Dark mode</button>
+  <button id="theme">☾ Dark mode</button>
 </nav>
 
 <main>
   <header class="hero">
-    <span class="eyebrow">A LITTLE SPACE TO DO GREAT THINGS</span>
-    <h1>One task.<br>One focused moment.</h1>
-    <p>Clear your mind, start the clock, and make room for progress.</p>
+    <span class="eyebrow">YOUR OWN LITTLE PRODUCTIVITY PLANET</span>
+    <h1>Make space<br>for your next big idea.</h1>
+    <p>A focused timer, a clear task list, and progress you can see.</p>
   </header>
 
   <div class="layout">
-    <section class="card timer-card" aria-label="Study timer">
-      <div class="modes">
-        <button id="focusMode" class="active" aria-pressed="true">
-          Focus
-        </button>
-        <button id="breakMode" aria-pressed="false">Short break</button>
-      </div>
-
-      <div class="clock">
-        <svg viewBox="0 0 200 200" aria-hidden="true">
-          <circle class="ring-bg" cx="100" cy="100" r="90"></circle>
-          <circle class="ring" id="ring" cx="100" cy="100" r="90"></circle>
-        </svg>
-
-        <div class="clock-text">
-          <div id="time" role="timer" aria-label="Time remaining">25:00</div>
-          <span id="timerLabel">Time to focus</span>
+    <div>
+      <section class="card timer">
+        <div class="modes">
+          <button id="focusMode" aria-pressed="true">Focus</button>
+          <button id="breakMode" aria-pressed="false">Break</button>
         </div>
-      </div>
 
-      <div class="timer-actions">
-        <button id="start" class="primary">Start session</button>
-        <button id="reset">↺ Reset</button>
-      </div>
+        <div class="clock">
+          <svg viewBox="0 0 200 200" aria-hidden="true">
+            <circle class="track" cx="100" cy="100" r="90"></circle>
+            <circle id="ring" cx="100" cy="100" r="90"></circle>
+          </svg>
+          <div class="clock-label">
+            <div id="time" role="timer" aria-label="Time remaining">25:00</div>
+            <span id="timerLabel">Time to focus</span>
+          </div>
+        </div>
 
-      <div class="settings">
-        <label for="focusMinutes">
-          Focus duration · minutes
-          <input id="focusMinutes" type="number"
-                 min="1" max="180" step="1" value="25">
+        <div class="actions">
+          <button id="start" class="primary">Start session</button>
+          <button id="reset">↺ Reset</button>
+        </div>
+
+        <div class="grid settings">
+          <label for="focusMinutes">Focus minutes
+            <input id="focusMinutes" type="number" min="1" max="180" step="1">
+          </label>
+          <label for="breakMinutes">Break minutes
+            <input id="breakMinutes" type="number" min="1" max="60" step="1">
+          </label>
+        </div>
+
+        <label class="sound">
+          <input type="checkbox" id="sound">
+          Session completion sound
         </label>
 
-        <label for="breakMinutes">
-          Break duration · minutes
-          <input id="breakMinutes" type="number"
-                 min="1" max="60" step="1" value="5">
+        <p id="status" role="status" aria-live="polite"></p>
+
+        <details>
+          <summary>Keyboard shortcuts</summary>
+          <p>
+            <kbd>Space</kbd> Start / pause<br>
+            <kbd>R</kbd> Reset current timer<br>
+            <kbd>N</kbd> Jump to new task
+          </p>
+          <p>Shortcuts are inactive while typing in a form field.</p>
+        </details>
+      </section>
+
+      <section class="card">
+        <h2>Your daily orbit</h2>
+        <p class="small muted">Completed focus sessions, using your device’s local date.</p>
+
+        <div class="stats">
+          <div class="stat">
+            <strong id="todayCount">0</strong>
+            <span>today’s sessions</span>
+          </div>
+          <div class="stat">
+            <strong id="allCount">0</strong>
+            <span>all sessions</span>
+          </div>
+          <div class="stat">
+            <strong id="allMinutes">0</strong>
+            <span>focus minutes</span>
+          </div>
+        </div>
+
+        <label for="dailyGoal">Daily focus-session goal
+          <input id="dailyGoal" type="number" min="1" max="50" step="1">
         </label>
-      </div>
 
-      <label class="sound-option">
-        <input type="checkbox" id="sound" checked>
-        Play a sound when the session ends
-      </label>
-
-      <p id="status" role="status" aria-live="polite"></p>
-    </section>
+        <p id="goalText" class="small muted"></p>
+        <progress id="goalProgress" max="100" value="0"
+                  aria-label="Daily focus-session goal progress"></progress>
+      </section>
+    </div>
 
     <div>
       <section class="card">
-        <h2>Your small wins</h2>
-        <p class="subtitle">Keep your next steps simple and specific.</p>
+        <h2>Your next small wins</h2>
+        <p class="small muted">Add a task, choose its priority, and keep moving.</p>
 
-        <form class="task-form" id="taskForm">
-          <input id="taskInput" type="text" maxlength="140"
+        <form id="taskForm" class="task-form">
+          <input id="taskInput" maxlength="140"
                  placeholder="What will you work on?"
                  aria-label="New task" required>
-          <button type="submit" aria-label="Add task">+</button>
+          <select id="priority" aria-label="Task priority">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+          </select>
+          <button class="primary" type="submit">+ Add</button>
         </form>
+
+        <div class="filters">
+          <input id="search" type="search" placeholder="Search tasks…"
+                 aria-label="Search tasks">
+          <select id="filter" aria-label="Filter tasks">
+            <option value="all">All tasks</option>
+            <option value="active">Active</option>
+            <option value="done">Completed</option>
+            <option value="high">High priority</option>
+          </select>
+        </div>
 
         <ul id="tasks" aria-label="Task checklist"></ul>
 
-        <div class="task-footer">
-          <span id="taskCount">0 tasks completed</span>
+        <div class="row">
+          <span id="taskCount" class="small muted"></span>
           <button id="clearCompleted">Clear completed</button>
         </div>
       </section>
 
       <section class="card">
-        <h2>Your focus journey</h2>
-        <p class="subtitle">Completed focus sessions in this browser.</p>
-        <div class="stats">
-          <div class="stat">
-            <strong id="sessions">0</strong>
-            <span>sessions completed</span>
-          </div>
-          <div class="stat">
-            <strong id="minutes">0</strong>
-            <span>focus minutes</span>
-          </div>
-        </div>
+        <h2>Recent focus sessions</h2>
+        <p class="small muted">Your latest eight completed sessions.</p>
+        <ul id="history" aria-label="Recent focus sessions"></ul>
       </section>
 
       <section class="card">
-        <span class="eyebrow">A GENTLE REMINDER</span>
-        <p class="quote">
-          “You don’t need to finish everything today.
-          Just give the next thing your attention.”
+        <h2>Keep your progress</h2>
+        <p class="small muted">
+          Export a JSON backup of your tasks, preferences, and session history.
+          Importing replaces the saved data in this browser.
         </p>
+
+        <div class="actions">
+          <button id="export">↓ Export backup</button>
+          <button id="import">↑ Import backup</button>
+        </div>
+
+        <input id="importFile" type="file" accept=".json,application/json" hidden>
+        <p id="backupStatus" class="small" role="status" aria-live="polite"></p>
       </section>
     </div>
   </div>
 </main>
 
 <footer>
-  Made for steady progress · Tasks, preferences, and completed sessions
-  save locally when available. An unfinished timer resets on refresh.
+  Data saves locally when available. Unfinished timers reset on refresh.
+  Keep the page open for completion alerts.
 </footer>
 
 <script>
 "use strict";
 
 const $ = id => document.getElementById(id);
-const KEY = "orbit-focus-v1";
-const CIRCUMFERENCE = 2 * Math.PI * 90;
+const KEY = "orbit-focus-v2";
+const OLD_KEY = "orbit-focus-v1";
+const CIRCLE = 2 * Math.PI * 90;
 
-let data = {
-  tasks: [],
-  sessions: 0,
-  minutes: 0,
-  focusMinutes: 25,
-  breakMinutes: 5,
-  dark: false,
-  sound: true
-};
+function freshData() {
+  return {
+    version: 2,
+    tasks: [],
+    history: [],
+    legacySessions: 0,
+    legacyMinutes: 0,
+    focusMinutes: 25,
+    breakMinutes: 5,
+    dailyGoal: 4,
+    dark: false,
+    sound: true
+  };
+}
+
+function integer(value, min, max) {
+  return Number.isInteger(value) && value >= min && value <= max;
+}
+
+function validHistory(entry) {
+  return entry &&
+    typeof entry.finishedAt === "string" &&
+    Number.isFinite(Date.parse(entry.finishedAt)) &&
+    integer(entry.minutes, 1, 180);
+}
+
+function validateBackup(raw) {
+  if (!raw || typeof raw !== "object" || raw.version !== 2) {
+    throw Error("This is not an Orbit Focus version 2 backup.");
+  }
+
+  if (!Array.isArray(raw.tasks) || !Array.isArray(raw.history)) {
+    throw Error("The backup is missing tasks or session history.");
+  }
+
+  if (raw.tasks.length > 10000 || raw.history.length > 50000) {
+    throw Error("This backup contains too many records.");
+  }
+
+  const ids = new Set();
+
+  const tasks = raw.tasks.map(task => {
+    if (!task ||
+        typeof task.id !== "string" ||
+        task.id.length < 1 || task.id.length > 100 ||
+        ids.has(task.id) ||
+        typeof task.text !== "string" ||
+        !task.text.trim() || task.text.length > 140 ||
+        typeof task.done !== "boolean" ||
+        !["normal", "high"].includes(task.priority)) {
+      throw Error("The backup contains an invalid task.");
+    }
+
+    ids.add(task.id);
+
+    return {
+      id: task.id,
+      text: task.text,
+      done: task.done,
+      priority: task.priority
+    };
+  });
+
+  if (!raw.history.every(validHistory)) {
+    throw Error("The backup contains an invalid session.");
+  }
+
+  if (!integer(raw.focusMinutes, 1, 180) ||
+      !integer(raw.breakMinutes, 1, 60) ||
+      !integer(raw.dailyGoal, 1, 50) ||
+      !integer(raw.legacySessions, 0, 1000000) ||
+      !integer(raw.legacyMinutes, 0, 180000000) ||
+      typeof raw.dark !== "boolean" ||
+      typeof raw.sound !== "boolean") {
+    throw Error("The backup contains invalid preferences or totals.");
+  }
+
+  return {
+    version: 2,
+    tasks,
+    history: raw.history.map(entry => ({
+      finishedAt: entry.finishedAt,
+      minutes: entry.minutes
+    })),
+    legacySessions: raw.legacySessions,
+    legacyMinutes: raw.legacyMinutes,
+    focusMinutes: raw.focusMinutes,
+    breakMinutes: raw.breakMinutes,
+    dailyGoal: raw.dailyGoal,
+    dark: raw.dark,
+    sound: raw.sound
+  };
+}
+
+let data = freshData();
+let storageNotice = "";
 
 try {
-  const saved = JSON.parse(localStorage.getItem(KEY));
+  const saved = localStorage.getItem(KEY);
 
-  if (saved && typeof saved === "object") {
-    if (Array.isArray(saved.tasks)) {
-      data.tasks = saved.tasks
-        .filter(task =>
-          task &&
-          typeof task.id === "string" &&
-          typeof task.text === "string"
-        )
-        .map(task => ({
-          id: task.id,
-          text: task.text.slice(0, 140),
-          done: task.done === true
-        }));
-    }
+  if (saved) {
+    data = validateBackup(JSON.parse(saved));
+  } else {
+    // Preserve valid tasks and totals from the previous version.
+    const old = JSON.parse(localStorage.getItem(OLD_KEY) || "null");
 
-    for (const key of ["sessions", "minutes"]) {
-      if (Number.isFinite(saved[key]) && saved[key] >= 0) {
-        data[key] = Math.floor(saved[key]);
+    if (old && typeof old === "object") {
+      const used = new Set();
+
+      if (Array.isArray(old.tasks)) {
+        data.tasks = old.tasks
+          .filter(task => {
+            if (!task ||
+                typeof task.id !== "string" ||
+                !task.id || task.id.length > 100 ||
+                used.has(task.id) ||
+                typeof task.text !== "string" ||
+                !task.text.trim()) return false;
+            used.add(task.id);
+            return true;
+          })
+          .slice(0, 10000)
+          .map(task => ({
+            id: task.id,
+            text: task.text.slice(0, 140),
+            done: task.done === true,
+            priority: "normal"
+          }));
       }
-    }
 
-    for (const [key, max] of [
-      ["focusMinutes", 180],
-      ["breakMinutes", 60]
-    ]) {
-      if (Number.isInteger(saved[key]) &&
-          saved[key] >= 1 && saved[key] <= max) {
-        data[key] = saved[key];
+      if (integer(old.sessions, 0, 1000000)) {
+        data.legacySessions = old.sessions;
       }
-    }
 
-    data.dark = saved.dark === true;
-    data.sound = saved.sound !== false;
+      if (integer(old.minutes, 0, 180000000)) {
+        data.legacyMinutes = old.minutes;
+      }
+
+      if (integer(old.focusMinutes, 1, 180)) {
+        data.focusMinutes = old.focusMinutes;
+      }
+
+      if (integer(old.breakMinutes, 1, 60)) {
+        data.breakMinutes = old.breakMinutes;
+      }
+
+      data.dark = old.dark === true;
+      data.sound = old.sound !== false;
+    }
   }
 } catch {
-  // Defaults work when storage is unavailable or invalid.
+  storageNotice = "Saved data could not be loaded. Starting with defaults.";
 }
 
 let mode = "focus";
@@ -515,109 +447,124 @@ let duration = data.focusMinutes * 60;
 let remaining = duration;
 let running = false;
 let deadline = 0;
-let interval = null;
-let audioContext = null;
+let timer = null;
+let audio = null;
 
 function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify(data));
+    return true;
   } catch {
-    $("status").textContent =
-      "Browser storage is unavailable. Changes last until this page closes.";
+    $("backupStatus").textContent =
+      "Browser storage is unavailable or full. Export a backup to keep your progress.";
+    return false;
   }
 }
 
-function displayTimer() {
-  const seconds = Math.max(0, Math.ceil(remaining));
-  const minutes = Math.floor(seconds / 60);
-  const rest = seconds % 60;
-  const text =
-    `${String(minutes).padStart(2, "0")}:` +
-    `${String(rest).padStart(2, "0")}`;
-
-  $("time").textContent = text;
-  document.title = `${text} · Orbit Focus`;
-
-  const progress = Math.min(1, Math.max(0, remaining / duration));
-  $("ring").style.strokeDasharray = CIRCUMFERENCE;
-  $("ring").style.strokeDashoffset =
-    CIRCUMFERENCE * (1 - progress);
-
-  $("start").textContent = running
-    ? "Pause session"
-    : remaining < duration
-      ? "Resume session"
-      : "Start session";
-
-  $("focusMinutes").disabled = running;
-  $("breakMinutes").disabled = running;
+function localDay(date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0")
+  ].join("-");
 }
 
 function prepareAudio() {
   if (!data.sound) return;
 
   try {
-    const AudioAPI = window.AudioContext || window.webkitAudioContext;
-    if (!AudioAPI) return;
-    audioContext = audioContext || new AudioAPI();
-    audioContext.resume().catch(() => {});
-  } catch {
-    // Timer works without sound.
-  }
+    const API = window.AudioContext || window.webkitAudioContext;
+    if (!API) return;
+    audio = audio || new API();
+    audio.resume().catch(() => {});
+  } catch {}
 }
 
 function chime() {
-  if (!data.sound || !audioContext ||
-      audioContext.state !== "running") return;
+  if (!data.sound || !audio || audio.state !== "running") return;
 
   try {
     [523.25, 659.25, 783.99].forEach((frequency, index) => {
-      const oscillator = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      const start = audioContext.currentTime + index * 0.18;
+      const oscillator = audio.createOscillator();
+      const gain = audio.createGain();
+      const start = audio.currentTime + index * 0.18;
 
-      oscillator.type = "sine";
       oscillator.frequency.value = frequency;
-
       gain.gain.setValueAtTime(0, start);
-      gain.gain.linearRampToValueAtTime(0.12, start + 0.02);
+      gain.gain.linearRampToValueAtTime(0.1, start + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.001, start + 0.5);
 
       oscillator.connect(gain);
-      gain.connect(audioContext.destination);
+      gain.connect(audio.destination);
       oscillator.start(start);
       oscillator.stop(start + 0.55);
     });
-  } catch {
-    // The completion message remains available if audio fails.
-  }
+  } catch {}
 }
 
-function renderStats() {
-  $("sessions").textContent = data.sessions;
-  $("minutes").textContent = data.minutes;
+function displayTimer() {
+  const seconds = Math.max(0, Math.ceil(remaining));
+  const text =
+    String(Math.floor(seconds / 60)).padStart(2, "0") + ":" +
+    String(seconds % 60).padStart(2, "0");
+
+  $("time").textContent = text;
+  document.title = `${text} · Orbit Focus`;
+
+  $("ring").style.strokeDasharray = CIRCLE;
+  $("ring").style.strokeDashoffset =
+    CIRCLE * (1 - Math.max(0, Math.min(1, remaining / duration)));
+
+  $("start").textContent = running
+    ? "Pause session"
+    : remaining < duration ? "Resume session" : "Start session";
+
+  $("focusMinutes").disabled = running;
+  $("breakMinutes").disabled = running;
+}
+
+function setMode(next) {
+  running = false;
+  clearInterval(timer);
+  mode = next;
+  duration = (
+    mode === "focus" ? data.focusMinutes : data.breakMinutes
+  ) * 60;
+  remaining = duration;
+
+  $("focusMode").classList.toggle("active", mode === "focus");
+  $("breakMode").classList.toggle("active", mode === "break");
+  $("focusMode").setAttribute("aria-pressed", mode === "focus");
+  $("breakMode").setAttribute("aria-pressed", mode === "break");
+
+  $("timerLabel").textContent =
+    mode === "focus" ? "Time to focus" : "Take a little breather";
+
+  displayTimer();
 }
 
 function complete() {
-  running = false;
-  clearInterval(interval);
-  remaining = 0;
+  const finishedMode = mode;
+  const plannedFinish = new Date(deadline).toISOString();
 
-  if (mode === "focus") {
-    data.sessions++;
-    data.minutes += duration / 60;
+  running = false;
+  clearInterval(timer);
+
+  if (finishedMode === "focus") {
+    data.history.push({
+      finishedAt: plannedFinish,
+      minutes: duration / 60
+    });
     save();
     renderStats();
   }
 
   chime();
-
-  const finishedMode = mode;
   setMode(finishedMode === "focus" ? "break" : "focus");
 
   $("status").textContent = finishedMode === "focus"
-    ? "Focus session complete! Your break is ready when you are."
-    : "Break complete. Ready for your next focused moment?";
+    ? "Focus complete! Start your break when you’re ready."
+    : "Break complete. Your next focus session is ready.";
 }
 
 function tick() {
@@ -627,176 +574,212 @@ function tick() {
 
   if (remaining <= 0) {
     complete();
-    return;
+  } else {
+    displayTimer();
   }
-
-  displayTimer();
 }
 
-function setMode(nextMode) {
-  running = false;
-  clearInterval(interval);
-  mode = nextMode;
-
-  duration = (
-    mode === "focus" ? data.focusMinutes : data.breakMinutes
-  ) * 60;
-
-  remaining = duration;
-
-  $("focusMode").classList.toggle("active", mode === "focus");
-  $("breakMode").classList.toggle("active", mode === "break");
-  $("focusMode").setAttribute("aria-pressed", mode === "focus");
-  $("breakMode").setAttribute("aria-pressed", mode === "break");
-  $("timerLabel").textContent =
-    mode === "focus" ? "Time to focus" : "Take a little breather";
-
-  displayTimer();
-}
-
-$("start").addEventListener("click", () => {
+function toggleTimer() {
   if (running) {
     tick();
-
-    // tick() may have completed the session.
     if (!running) return;
 
     running = false;
-    clearInterval(interval);
-    $("status").textContent = "Paused. Take your time.";
+    clearInterval(timer);
+    $("status").textContent = "Paused. Resume when you’re ready.";
   } else {
     prepareAudio();
     running = true;
     deadline = Date.now() + remaining * 1000;
-    interval = setInterval(tick, 250);
-    $("status").textContent = mode === "focus"
-      ? "One thing at a time. You’ve got this."
-      : "Step away from the screen for a moment.";
+    timer = setInterval(tick, 250);
+    $("status").textContent =
+      mode === "focus" ? "One task. One focused moment." : "Enjoy your break.";
   }
 
   displayTimer();
-});
+}
 
-$("reset").addEventListener("click", () => {
+function resetTimer() {
   setMode(mode);
   $("status").textContent = "Timer reset.";
-});
+}
 
-$("focusMode").addEventListener("click", () => {
+$("start").onclick = toggleTimer;
+$("reset").onclick = resetTimer;
+
+$("focusMode").onclick = () => {
   setMode("focus");
-  $("status").textContent = "Focus mode ready. Previous timer reset.";
-});
+  $("status").textContent = "Focus mode selected. Timer reset.";
+};
 
-$("breakMode").addEventListener("click", () => {
+$("breakMode").onclick = () => {
   setMode("break");
-  $("status").textContent = "Break mode ready. Previous timer reset.";
-});
+  $("status").textContent = "Break mode selected. Timer reset.";
+};
 
-for (const [id, max] of [
-  ["focusMinutes", 180],
-  ["breakMinutes", 60]
-]) {
-  $(id).addEventListener("change", () => {
-    let value = Number($(id).value);
+function renderStats() {
+  const today = localDay(new Date());
+  const todayCount = data.history.filter(entry =>
+    localDay(new Date(entry.finishedAt)) === today
+  ).length;
 
-    if (!Number.isFinite(value) || $(id).value.trim() === "") {
-      value = data[id];
-    }
+  const allCount = data.legacySessions + data.history.length;
+  const allMinutes = data.legacyMinutes +
+    data.history.reduce((sum, entry) => sum + entry.minutes, 0);
 
-    value = Math.max(1, Math.min(max, Math.round(value)));
-    data[id] = value;
-    $(id).value = value;
+  $("todayCount").textContent = todayCount;
+  $("allCount").textContent = allCount;
+  $("allMinutes").textContent = allMinutes;
+  $("goalText").textContent =
+    `${todayCount} / ${data.dailyGoal} sessions completed today`;
+  $("goalProgress").value =
+    Math.min(100, todayCount / data.dailyGoal * 100);
 
-    save();
-    setMode(mode);
-    $("status").textContent = "Duration updated. Timer reset.";
+  $("history").replaceChildren();
+
+  const recent = [...data.history]
+    .sort((a, b) => Date.parse(b.finishedAt) - Date.parse(a.finishedAt))
+    .slice(0, 8);
+
+  if (!recent.length) {
+    const empty = document.createElement("li");
+    empty.className = "empty";
+    empty.textContent = "Your first completed session will appear here.";
+    $("history").append(empty);
+  }
+
+  recent.forEach(entry => {
+    const row = document.createElement("li");
+    row.className = "history-item";
+
+    const title = document.createElement("span");
+    title.textContent = `${entry.minutes} min · Focus completed`;
+
+    const date = document.createElement("time");
+    date.dateTime = entry.finishedAt;
+    date.textContent = new Date(entry.finishedAt).toLocaleString(
+      undefined,
+      { month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" }
+    );
+
+    row.append(title, date);
+    $("history").append(row);
   });
 }
 
 function renderTasks() {
+  const query = $("search").value.trim().toLowerCase();
+  const filter = $("filter").value;
+
+  const visible = data.tasks
+    .filter(task => {
+      if (!task.text.toLowerCase().includes(query)) return false;
+      if (filter === "active") return !task.done;
+      if (filter === "done") return task.done;
+      if (filter === "high") return task.priority === "high";
+      return true;
+    })
+    .sort((a, b) =>
+      Number(a.done) - Number(b.done) ||
+      Number(b.priority === "high") - Number(a.priority === "high")
+    );
+
   $("tasks").replaceChildren();
 
-  if (!data.tasks.length) {
+  if (!visible.length) {
     const empty = document.createElement("li");
     empty.className = "empty";
-    empty.textContent = "A fresh start. Add your first task above.";
+    empty.textContent = data.tasks.length
+      ? "No tasks match your search or filter."
+      : "A fresh start. Add your first task.";
     $("tasks").append(empty);
   }
 
-  data.tasks.forEach(task => {
-    const item = document.createElement("li");
-    item.className = "task" + (task.done ? " done" : "");
+  visible.forEach(task => {
+    const row = document.createElement("li");
+    row.className = "task" + (task.done ? " done" : "");
 
     const label = document.createElement("label");
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.checked = task.done;
 
-    const text = document.createElement("span");
-    text.textContent = task.text;
+    const name = document.createElement("span");
+    name.className = "task-name";
+    name.textContent = task.text;
 
-    checkbox.addEventListener("change", () => {
+    checkbox.onchange = () => {
       task.done = checkbox.checked;
-      item.classList.toggle("done", task.done);
-      updateTaskFooter();
       save();
-    });
+      renderTasks();
 
-    label.append(checkbox, text);
+      const replacement = [...$("tasks").querySelectorAll("input")]
+        .find(input => input.dataset.taskId === task.id);
+      if (replacement) replacement.focus();
+    };
+    checkbox.dataset.taskId = task.id;
+
+    label.append(checkbox, name);
+
+    const badge = document.createElement("span");
+    badge.className = `priority ${task.priority}`;
+    badge.textContent = task.priority === "high" ? "HIGH" : "NORMAL";
 
     const remove = document.createElement("button");
     remove.className = "delete";
     remove.textContent = "×";
     remove.setAttribute("aria-label", `Delete task: ${task.text}`);
-
-    remove.addEventListener("click", () => {
-      data.tasks = data.tasks.filter(entry => entry.id !== task.id);
+    remove.onclick = () => {
+      data.tasks = data.tasks.filter(item => item.id !== task.id);
       save();
       renderTasks();
       $("taskInput").focus();
-    });
+    };
 
-    item.append(label, remove);
-    $("tasks").append(item);
+    row.append(label, badge, remove);
+    $("tasks").append(row);
   });
 
-  updateTaskFooter();
-}
-
-function updateTaskFooter() {
   const completed = data.tasks.filter(task => task.done).length;
-  $("taskCount").textContent =
-    `${completed} / ${data.tasks.length} completed`;
+  $("taskCount").textContent = `${completed} / ${data.tasks.length} completed`;
   $("clearCompleted").disabled = completed === 0;
 }
 
-$("taskForm").addEventListener("submit", event => {
+$("taskForm").onsubmit = event => {
   event.preventDefault();
   const text = $("taskInput").value.trim();
 
   if (!text) {
     $("taskInput").value = "";
-    $("taskInput").focus();
+    return;
+  }
+
+  if (data.tasks.length >= 10000) {
+    $("status").textContent = "Task limit reached. Remove some older tasks.";
     return;
   }
 
   data.tasks.push({
     id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
     text,
-    done: false
+    done: false,
+    priority: $("priority").value
   });
 
   save();
   renderTasks();
   $("taskInput").value = "";
   $("taskInput").focus();
-});
+};
 
-$("clearCompleted").addEventListener("click", () => {
+$("search").oninput = renderTasks;
+$("filter").onchange = renderTasks;
+
+$("clearCompleted").onclick = () => {
   data.tasks = data.tasks.filter(task => !task.done);
   save();
   renderTasks();
-});
+};
 
 function applyTheme() {
   document.body.classList.toggle("dark", data.dark);
@@ -807,31 +790,148 @@ function applyTheme() {
   );
 }
 
-$("theme").addEventListener("click", () => {
+$("theme").onclick = () => {
   data.dark = !data.dark;
   applyTheme();
   save();
-});
+};
 
-$("sound").addEventListener("change", () => {
+$("sound").onchange = () => {
   data.sound = $("sound").checked;
   if (data.sound) prepareAudio();
   save();
+};
+
+for (const [id, max] of [
+  ["focusMinutes", 180],
+  ["breakMinutes", 60],
+  ["dailyGoal", 50]
+]) {
+  $(id).onchange = () => {
+    const raw = Number($(id).value);
+    const value = $(id).value.trim() && Number.isFinite(raw)
+      ? Math.max(1, Math.min(max, Math.round(raw)))
+      : data[id];
+
+    data[id] = value;
+    $(id).value = value;
+    save();
+
+    if (id === "dailyGoal") {
+      renderStats();
+    } else {
+      setMode(mode);
+      $("status").textContent = "Duration updated. Timer reset.";
+    }
+  };
+}
+
+$("export").onclick = () => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type:"application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `orbit-focus-${localDay(new Date())}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  $("backupStatus").textContent = "Backup downloaded.";
+};
+
+$("import").onclick = () => {
+  if (running) {
+    $("backupStatus").textContent = "Pause the timer before importing a backup.";
+    return;
+  }
+  $("importFile").click();
+};
+
+$("importFile").onchange = async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    if (running) throw Error("Pause the timer before importing.");
+    if (file.size > 10 * 1024 * 1024) {
+      throw Error("Please choose a backup smaller than 10 MB.");
+    }
+
+    const imported = validateBackup(JSON.parse(await file.text()));
+
+    // The timer might have started while the file was being read.
+    if (running) throw Error("Pause the timer before importing.");
+
+    if (!confirm(
+      "Replace your current tasks, preferences, and session history with this backup?"
+    )) return;
+
+    data = imported;
+    initialize();
+    const persisted = save();
+
+    $("backupStatus").textContent = persisted
+      ? "Backup imported successfully. Timer reset."
+      : "Backup imported for this visit. Browser storage is unavailable; keep your backup.";
+  } catch (error) {
+    $("backupStatus").textContent = `Import failed: ${error.message}`;
+  } finally {
+    event.target.value = "";
+  }
+};
+
+document.addEventListener("keydown", event => {
+  const target = event.target;
+
+  if (event.ctrlKey || event.metaKey || event.altKey || event.repeat ||
+      target.closest("input,textarea,select,button,summary,a,[contenteditable]")) {
+    return;
+  }
+
+  if (event.code === "Space") {
+    event.preventDefault();
+    toggleTimer();
+  } else if (event.key.toLowerCase() === "r") {
+    resetTimer();
+  } else if (event.key.toLowerCase() === "n") {
+    event.preventDefault();
+    $("taskInput").focus();
+  }
 });
 
-// Recalculate from the deadline after background-tab throttling.
 document.addEventListener("visibilitychange", () => {
-  if (!document.hidden && running) tick();
+  if (!document.hidden) {
+    if (running) tick();
+    renderStats();
+  }
 });
 
-$("focusMinutes").value = data.focusMinutes;
-$("breakMinutes").value = data.breakMinutes;
-$("sound").checked = data.sound;
+// Keep the daily goal current across local midnight.
+setInterval(renderStats, 60000);
 
-applyTheme();
-renderTasks();
-renderStats();
-setMode("focus");
+function initialize() {
+  $("focusMinutes").value = data.focusMinutes;
+  $("breakMinutes").value = data.breakMinutes;
+  $("dailyGoal").value = data.dailyGoal;
+  $("sound").checked = data.sound;
+  $("search").value = "";
+  $("filter").value = "all";
+
+  applyTheme();
+  renderTasks();
+  renderStats();
+  setMode("focus");
+}
+
+initialize();
+
+if (storageNotice) {
+  $("backupStatus").textContent = storageNotice;
+}
 </script>
 </body>
 </html>
